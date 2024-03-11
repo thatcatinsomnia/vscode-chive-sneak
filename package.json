@@ -1,0 +1,97 @@
+{
+  "name": "chive-sneak",
+  "displayName": "chive-sneak",
+  "description": "專為開發界的韭菜打造，讓你在coding同時偷看台灣市場動態，兼顧工作與市場，輕鬆成就韭菜人生",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.87.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "chiveSneak",
+          "name": "韭菜偷偷來"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "ChiveSneak configuration",
+      "type": "array",
+      "properties": {
+        "chiveSneak.watchlist": {
+          "type": "array",
+          "default": null,
+          "description": "stock watchlist"
+        }
+      }
+    },
+    "colors": [
+      {
+        "id": "stockRed",
+        "description": "red color for stock",
+        "defaults": {
+          "light": "#E53935",
+          "dark": "#E53935"
+        }
+      },
+      {
+        "id": "stockGreen",
+        "description": "green color for stock",
+        "defaults": {
+          "light": "#4CAF50",
+          "dark": "#4CAF50"
+        }
+      },
+      {
+        "id": "stockYellow",
+        "description": "yellow color for stock",
+        "defaults": {
+          "light": "#FFF176",
+          "dark": "#FFF176"
+        }
+      },
+      {
+        "id": "stockGray",
+        "description": "grey color for stock",
+        "defaults": {
+          "light": "#BDBDBD",
+          "dark": "#BDBDBD"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.87.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "@vscode/test-cli": "^0.0.6",
+    "@vscode/test-electron": "^2.3.9",
+    "eslint": "^8.56.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "axios": "^1.6.7"
+  }
+}
