@@ -57,29 +57,31 @@ export default class StockProvider implements vscode.TreeDataProvider<Stock> {
     this._onDidChangeTreeData.fire(undefined);
   }
 
-  async addToWatchlist(symbolString?: string) {
-    if (!symbolString) {
-      return;
+  async addToWatchlist(code = '') {
+    if (code.trim().length === 0) {
+      return await vscode.window.showErrorMessage("請輸入代號 😐");
     }
-    const config = vscode.workspace.getConfiguration('chiveKiller');
+
+    const isExist = await this.resource.checkStockExist(code.trim());
+
+    if (!isExist) {
+      return await vscode.window.showErrorMessage(`代號 ${code} 不存在 😦`);
+    }
+
+    const config = vscode.workspace.getConfiguration('chiveSneak');
     const watchlist = config.get('watchlist') as string[];
 
-    const newSymbols = symbolString
-      .split(' ')
-      .map(s => `tse_${s}.tw`)
-      .filter(s => {
-        return !watchlist.includes(s);
-      });
+    const formattedSymbol = `tse_${code.trim()}.tw`;
 
-    if (newSymbols.length === 0) {
-      return;  
+    if (watchlist.includes(formattedSymbol)) {
+      return await vscode.window.showErrorMessage(`代號 ${code} 已重複 😢`);
     }
 
-    await config.update('watchlist', [...watchlist, ...newSymbols], vscode.ConfigurationTarget.Global);
+    await config.update('watchlist', [...watchlist, formattedSymbol], vscode.ConfigurationTarget.Global);
 
     this.refresh();
   }
-  
+
   createTreeItem(stock: Stock) {
     if (stock.currentPrice === -1) {
       return new vscode.TreeItem(`${stock.name}　-　-`);

@@ -1,12 +1,16 @@
 import type { Stock } from './StockProvider';
 import * as vscode from 'vscode';
-import twseApi from "./twseApi";
+import { twseApi, checkTwStockExistByCode } from "./twseApi";
 
 export default class StockResource {
   async fetchWatchList() {
     const watchlist = await this.getUserWatchListOrDefault();
     const stocks = await twseApi(watchlist);
     return stocks as Stock[];
+  }
+
+  async checkStockExist(code = '') {
+    return await checkTwStockExistByCode(code);
   }
 
   async getUserWatchListOrDefault() {

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import * as vscode from 'vscode';
 
 type TWSEData = {
   n: string; // 名稱
@@ -17,13 +18,13 @@ type TWSEData = {
   tlong: string; // 資料更新時間
 };
 
-export default async function twseApi(symbols: string[]) {
+export async function twseApi(symbols: string[]) {
   const queryString = symbols.join('|');
 
   try {
     const res = await axios(`https://mis.twse.com.tw/stock/api/getStockInfo.jsp?json=1&delay=0&ex_ch=${queryString}`);
     const data: TWSEData[] = res.data.msgArray;
-    
+
     return data.map(d => {
       const close = Number(d.y);
       const currentPrice = Number(d.z) || -1;
@@ -48,7 +49,7 @@ export default async function twseApi(symbols: string[]) {
       };
     });
   } catch (error) {
-    console.log(error);
+    vscode.window.showErrorMessage('無法從 API 取得股市資訊 😱');
   }
 }
 
@@ -71,4 +72,10 @@ function getStockChangeRate(current: number, close: number) {
   const difference = current - close;
   
   return ((difference / close) * 100).toFixed(2);
+}
+
+export async function checkTwStockExistByCode(code: string) {
+  const res = await axios(`https://mis.twse.com.tw/stock/api/getStockNames.jsp?n=${code.trim()}`);
+
+  return res.data.datas.length > 0;
 }
